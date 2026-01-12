@@ -1,0 +1,91 @@
+# Этот файл является скриптом для настройк BR-SRV (модуль 2)
+# Для исполнения скрипта нужно выполнить несколько действий
+# Перейдите к папке со скриптом
+# Используйте команду chmod +x BR-SRV.txt для возможности запуска скрипта
+# Используйте команду ./BR-SRV.txt для запуска скрипта
+
+#!/bin/bash
+set -e
+echo "Запускаем скрипт!"
+sleep 7
+clear
+sleep 7
+echo "vim /etc/resolv.conf"
+cat <<EOF > /etc/resolv.conf
+search au-team.irpo
+nameserver 77.88.8.8
+nameserver 192.168.1.10
+EOF
+sleep 7
+echo "cat /etc/net/ifaces/enp7s1/resolv.conf"
+cat /etc/net/ifaces/enp7s1/resolv.conf
+sleep 7
+echo "systemctl restart network"
+systemctl restart network
+sleep 7
+echo "apt-repo add http://altrepo.ru/local-p10 noarch local-p10"
+apt-repo add http://altrepo.ru/local-p10 noarch local-p10
+sleep 7
+echo "apt-get update"
+apt-get update
+sleep 7
+echo "apt-get install task-samba-dc -y"
+apt-get install task-samba-dc -y
+sleep 7
+echo "apt-get install sudo-samba-schema -y"
+apt-get install sudo-samba-schema -y
+sleep 7
+echo "vim /etc/hosts"
+sed -i '2a\ ' /etc/hosts
+sed -i '3c\192.168.3.10\tbr-srv.au-team.irpo' /etc/hosts
+sleep 7
+echo "cat /etc/hosts"
+cat /etc/hosts
+sleep 7
+echo "vim /etc/resolv.conf"
+cat <<EOF > /etc/resolv.conf
+search au-team.irpo
+nameserver 192.168.1.10
+EOF
+sleep 7
+echo "systemctl restart network"
+systemctl restart network
+sleep 7
+echo "rm -rf /etc/samba/smb.conf"
+rm -rf /etc/samba/smb.conf
+sleep 7
+echo "samba-tool domain provision"
+samba-tool domain provision
+sleep 7
+echo "samba-tool user add hquser1 P@ssw0rd"
+samba-tool user add hquser1 P@ssw0rd
+sleep 7
+echo "samba-tool user add hquser2 P@ssw0rd"
+samba-tool user add hquser2 P@ssw0rd
+sleep 7
+echo "samba-tool user add hquser3 P@ssw0rd"
+samba-tool user add hquser3 P@ssw0rd
+sleep 7
+echo "samba-tool user add hquser4 P@ssw0rd"
+samba-tool user add hquser4 P@ssw0rd
+sleep 7
+echo "samba-tool user add hquser5 P@ssw0rd"
+samba-tool user add hquser5 P@ssw0rd
+sleep 7
+echo "samba-tool group add hq"
+samba-tool group add hq
+sleep 7
+echo "samba-tool group addmembers hq hquser1,hquser2,hquser3,hquser4,hquser5"
+samba-tool group addmembers hq hquser1,hquser2,hquser3,hquser4,hquser5
+sleep 7
+echo "cp /var/lib/samba/private/krb5.conf /etc/krb5.conf"
+cp /var/lib/samba/private/krb5.conf /etc/krb5.conf
+sleep 7
+echo "systemctl enable --now samba.service"
+systemctl enable --now samba.service
+sleep 7
+echo "sudo-schema-apply"
+sudo-schema-apply
+sleep 7
+echo "create-sudo-rule"
+create-sudo-rule
