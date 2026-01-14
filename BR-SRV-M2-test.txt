@@ -1,0 +1,90 @@
+#!/bin/bash
+set -e
+sleep 7
+echo "Zapuskayem script!"
+sleep 7
+echo "mcedit /etc/net/ifaces/enp7s1/resolv.conf"
+sed -i '1c\nameserver 77.88.8.8' /etc/net/ifaces/enp7s1/resolv.conf
+echo "cat /etc/net/ifaces/enp7s1/resolv.conf"
+cat /etc/net/ifaces/enp7s1/resolv.conf
+sleep 7
+echo "systemctl restart network"
+systemctl restart network
+sleep 7
+echo "apt-get update"
+apt-get update
+sleep 7
+echo "apt-get install task-samba-dc alterator-{fbi,net-domain} admx-* admc gpui -y"
+apt-get install task-samba-dc alterator-{fbi,net-domain} admx-* admc gpui -y
+sleep 7
+echo "systemctl enable --now ahttpd alteratord"
+systemctl enable --now ahttpd alteratord
+sleep 7
+echo "hostname"
+hostname
+sleep 7
+echo "domainname au-team.irpo"
+domainname au-team.irpo
+sleep 7
+echo "domainname"
+domainname
+sleep 7
+echo "mcedit /etc/sysconfig/network"
+sed -i '9c\HOSTNAME=br-srv.au-team.irpo' /etc/sysconfig/network
+sleep 7
+echo "rm -rf /etc/samba/smb.conf /var/{lib,cache}/samba"
+rm -rf /etc/samba/smb.conf /var/{lib,cache}/samba
+sleep 7
+echo "mkdir -p /var/lib/samba/sysvol "
+mkdir -p /var/lib/samba/sysvol 
+sleep 7
+echo "samba-tool domain provision --realm=au-team.irpo --domain=au-team --adminpass='P@ssw0rd' --dns-backend=BIND9_DLZ --server-role=dc"
+samba-tool domain provision --realm=au-team.irpo --domain=au-team --adminpass='P@ssw0rd' --dns-backend=BIND9_DLZ --server-role=dc
+sleep 7
+echo "Перейдите к настройке HQ-CLI"
+sleep 7
+echo "Нужно ввести go после настройки HQ-CLI, чтобы продолжить"
+max_attempts=3
+attempts=0
+while [ "$user_input" != "go" ] && [ $attempts -lt $max_attempts ]; do
+    read -p "Введите 'go' (попытка $((attempts + 1))/$max_attempts): " user_input
+    attempts=$((attempts + 1))
+done
+
+if [ "$user_input" != "go" ]; then
+    echo "Превышено количество попыток. Работа остановлена."
+    exit 1
+fi
+sleep 7
+clear
+sleep 7
+echo "samba-tool user add user1.hq P@ssw0rd"
+samba-tool user add user1.hq P@ssw0rd
+sleep 7
+echo "samba-tool user add user2.hq P@ssw0rd"
+samba-tool user add user2.hq P@ssw0rd
+sleep 7
+echo "samba-tool user add user3.hq P@ssw0rd"
+samba-tool user add user3.hq P@ssw0rd
+sleep 7
+echo "samba-tool user add user4.hq P@ssw0rd"
+samba-tool user add user4.hq P@ssw0rd
+sleep 7
+echo "samba-tool user add user5.hq P@ssw0rd"
+samba-tool user add user5.hq P@ssw0rd
+sleep 7
+echo "samba-tool group add hq"
+samba-tool group add hq
+sleep 7
+echo "samba-tool group addmembers hq user1.hq,user2.hq,user3.hq,user4.hq,user5.hq"
+samba-tool group addmembers hq user1.hq,user2.hq,user3.hq,user4.hq,user5.hq
+sleep 7
+echo "admx-msi-setup"
+admx-msi-setup
+sleep 7
+echo "samba-tool computer add hq-srv --ip-address=192.168.1.10"
+samba-tool computer add hq-srv –ip-address=192.168.1.10
+echo "samba-tool computer add hq-srv --ip-address=172.16.1.10"
+samba-tool computer add hq-srv –ip-address=172.16.1.10
+echo "samba-tool computer add hq-srv --ip-address=192.168.2.10"
+samba-tool computer add hq-srv --ip-address=192.168.2.10

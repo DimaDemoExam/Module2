@@ -1,0 +1,72 @@
+# Этот файл является скриптом для настройк HQ-SRV (модуль 2)
+# Для исполнения скрипта нужно выполнить несколько действий
+# Перейдите к папке со скриптом
+# Используйте команду chmod +x HQ-SRV.txt для возможности запуска скрипта
+# Используйте команду ./HQ-SRV.txt для запуска скрипта
+# В некоторых местах необходимо вручную ввести пароли
+# или можно поменять ip-адреса
+# или для проверки использовать sudo mcedit и выходить из режимов
+
+#!/bin/bash
+set -e
+echo "Запускаем скрипт!"
+sleep 7
+clear
+sleep 7
+echo "apt-get update"
+apt-get update
+sleep 7
+echo "apt-get install -y nfs-{server,utils}"
+apt-get install -y nfs-{server,utils}
+sleep 7
+echo "lsblk"
+lsblk
+sleep 7
+echo "mdadm -C /dev/md0 -l 0 -n 2 /dev/sd{b,c}"
+mdadm -C /dev/md0 -l 0 -n 2 /dev/sd{b,c}
+sleep 7
+echo "lsblk"
+lsblk
+sleep 7
+echo "mkfs.ext4 /dev/md0"
+mkfs.ext4 /dev/md0
+sleep 7
+echo "echo DEVICE partitions >> /etc/mdadm.conf"
+echo DEVICE partitions >> /etc/mdadm.conf
+sleep 7
+echo "mdadm --detail --scan >> /etc/mdadm.conf"
+mdadm --detail --scan >> /etc/mdadm.conf
+sleep 7
+echo "mkdir /raid"
+mkdir /raid
+sleep 7
+echo "mcedit /etc/fstab"
+sed -i '3a\ ' /etc/fstab
+sed -i '3c\/dev/md0\t/raid\t\t\text4\tdefaults\t\t\t0 0' /etc/fstab
+sleep 7
+echo "cat /etc/fstab"
+cat /etc/fstab
+sleep 7
+echo "mount -a"
+mount -a
+sleep 7
+echo "df -h"
+df -h
+echo "mkdir /raid/nfs"
+mkdir /raid/nfs
+sleep 7
+echo "chmod 766 /raid/nfs"
+chmod 766 /raid/nfs
+sleep 7
+echo "mcedit /etc/exports"
+sed -i '2a\ ' /etc/exports
+sed -i '3c\/raid /nfs 192.168.1.65/28(rw,no_subtree_check,no_root_squash)' /etc/exports
+sleep 7
+echo "cat /etc/exports"
+cat /etc/exports
+sleep 7
+echo "exportfs -arv"
+exportfs -arv
+sleep 7
+echo "systemctl enable --now nfs-server.service"
+systemctl enable --now nfs-server.service
