@@ -21,6 +21,7 @@ Module 2:
 3_BR-SRV.txt
 4_BR-SRV.txt
 5_HQ-RTR.txt
+6_HQ-CLI.txt
 #
 #
 #
