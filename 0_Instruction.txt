@@ -26,6 +26,7 @@ Module 2:
 8_HQ-SRV.txt
 9_HQ-SRV.txt
 10_HQ-SRV.txt
+11_HQ-CLI.txt
 #
 #
 #
