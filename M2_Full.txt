@@ -350,7 +350,7 @@ fi
 done
 clear
 #
-echo "The End
+echo "The End"
 #
 echo "M2 5_HQ-CLI"
 #
