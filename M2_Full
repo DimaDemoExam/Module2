@@ -1,0 +1,521 @@
+echo "Запускаем скрипт!"
+sleep 5
+clear
+echo "M2 1_BR-SRV"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "cat <<EOF > /etc/net/ifaces/enp7s1/resolv.conf"
+echo "nameserver 192.168.1.10"
+echo "search au-team.irpo"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo " "
+echo "EOF"
+echo "systemctl restart network"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "Reboot HQ-RTR and BR-RTR"
+echo "Wait for 192.168.1.10 ping to work"
+echo "apt-get update"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "apt-get install -y task-samba-dc"
+echo "rm -rf /etc/samba/smb.conf"
+echo "samba-tool domain provision"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "cp /var/lib/samba/private/krb5.conf /etc/krb5.conf"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "systemctl enable --now samba"
+echo "sed -i '8a\ ' /etc/samba/smb.conf"
+echo "sed -i '8c\\tinterfaces = lo enp7s1' /etc/samba/smb.conf"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "sed -i '9a\ ' /etc/samba/smb.conf"
+echo "sed -i '9c\\tbind interfaces only = yes' /etc/samba/smb.conf"
+echo "cat <<EOF > /etc/net/ifaces/enp7s1/resolv.conf"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "nameserver 192.168.3.10"
+echo "nameserver 192.168.1.10"
+echo "search au-team.irpo"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo " "
+echo "EOF"
+echo "systemctl restart network"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "systemctl restart samba"
+echo "samba-tool domain info 127.0.0.1"
+echo "kinit administrator@AU-TEAM.IRPO"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "samba-tool user create hquser1 P@ssw0rd"
+echo "samba-tool user create hquser2 P@ssw0rd"
+echo "samba-tool user create hquser3 P@ssword"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "samba-tool user create hquser4 P@ssword"
+echo "samba-tool user create hquser5 P@ssword"
+echo "samba-tool group add hq"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "samba-tool group addmembers hq hquser1,hquser2,hquser3,hquser4,hquser5"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "The End"
+#
+echo "M2 2_HQ-RTR"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "sed -i '9c\dhcp-option=6,192.168.3.10,192.168.1.10' /etc/dnsmasq.conf"
+echo "systemctl restart dnsmasq"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "The End"
+#
+echo "M2 3_HQ-CLI"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "Reboot the internet connection"
+echo "Go to alterator"
+echo "Go to authentication"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "Enter AU-TEAM workgroup"
+echo "Continue next in console:"
+echo "roleadd hq wheel"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "sed -i '44c\Cmnd_Alias SHELLCMD  =  /bin/cat, /bin/grep, /usr/bin/id' /etc/sudoers"
+echo "sed -i '44a\ ' /etc/sudoers"
+echo "sed -i '45c\WHEEL_USERS ALL=(ALL:ALL) SHELLCMD' /etc/sudoers"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "The End"
+#
+echo "M2 4_HQ-SRV"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "mdadm --create /dev/md0 --level=0 --raid-device=2 /dev/sdb /dev/sdc"
+echo "mdadm --detail --scan > /etc/mdadm.conf"
+echo "fdisk /dev/md0"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "Input n in the console"
+echo "Press enter multiple times"
+echo "Input w in the console"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "mkfs.ext4 /dev/md0"
+echo "Input y in the console"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "mkdir /raid"
+echo "mount /dev/md0 /raid/"
+echo "df -h"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "sed -i '3a\ ' /etc/fstab"
+echo "sed -i '3c\/dev/md0\t/raid\t\t\text4\tdefaults\t\t\t0 0' /etc/fstab"
+echo "mount -av"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "df -h"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "apt-get update"
+echo "apt-get install -y nfs-server nfs-utils"
+echo "mkdir /raid/nfs"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "chmod 777 /raid/nfs/"
+echo "sed -i '2a\ ' /etc/exports"
+echo "sed -i '3c\/raid/nfs 192.168.2.0/28(rw,no_root_squash)' /etc/exports"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "exportfs -arv"
+echo "systemctl enable --now nfs-server"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "The End
+#
+echo "M2 5_HQ-CLI"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "mkdir /mnt/nfs"
+echo "chmod 777 /mnt/nfs"
+echo "sed -i '6a\ ' /etc/fstab"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "sed -i '7c\192.168.1.10:/raid/nfs\t/mnt/nfs\t\tnfs\tdefaults\t\t0\t\t0' /etc/fstab"
+echo "mount -av"
+echo "df -h"
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "The End"
+#
+echo "M2 6_ISP"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "control chrony server"
+echo "sed -i 's/pool pool.ntp.org iburst/pool pool.ntp.org iburst prefer minstratum 4/' /etc/chrony.conf | grep pool /etc/chrony.conf"
+echo "sed -i 's/\#local stratum 10/local stratum 5/' /etc/chrony.conf | grep "local stratum" /etc/chrony.conf"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "systemctl restart chronyd"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "The End"
+#
+echo "M2 7_BR-RTR"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "sed -i 's/pool pool.ntp.org iburst/server 172.16.1.1 iburst/' /etc/chrony.conf && systemctl restart chronyd && chronyc sources"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "The End"
+#
+echo "M2 8_BR-SRV"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "sed -i 's/pool pool.ntp.org iburst/server 172.16.1.1 iburst/' /etc/chrony.conf && systemctl restart chronyd && chronyc sources"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "The End"
+#
+echo "M2 9_HQ-SRV"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "sed -i 's/pool pool.ntp.org iburst/server 172.16.1.1 iburst/' /etc/chrony.conf && systemctl restart chronyd && chronyc sources"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "The End"
+#
+echo "M2 10_HQ-CLI"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "echo "server 172.16.1.1 iburst" >> /etc/chrony.conf && systemctl restart chronyd && chronyc sources"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "apt-get install yandex-browser-stable"
+#
+while true; do
+read -n1 key
+if [[ "$key" == 'y' ]]; then
+break
+fi
+done
+clear
+#
+echo "The End"
+#
